@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1',
+  headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use((config) => {
@@ -11,9 +12,20 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    // Wrong API URL (e.g. pointing at Vercel) returns index.html as the "response"
+    const data = res.data;
+    if (typeof data === 'string' && data.includes('<!doctype html')) {
+      return Promise.reject(
+        new Error(
+          'API returned HTML instead of JSON. Set REACT_APP_API_URL to https://pulse-backend-tkpf.onrender.com/api/v1 on Vercel and redeploy.'
+        )
+      );
+    }
+    return res;
+  },
   (err) => {
-    if (err.response?.status === 401) {
+    if (err.response?.status === 401 && !err.config?.url?.includes('/auth/login')) {
       localStorage.removeItem('pulse_token');
       window.location.href = '/login';
     }
