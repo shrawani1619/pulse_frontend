@@ -23,11 +23,8 @@ export default function AdminUsers() {
 
   useEffect(() => {
     const fromUrl = searchParams.get('status') || 'all';
-    if (fromUrl !== status) {
-      setStatus(fromUrl);
-      setPage(1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setStatus(fromUrl);
+    setPage(1);
   }, [searchParams]);
 
   const load = useCallback(async () => {
