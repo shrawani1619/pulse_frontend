@@ -15,9 +15,9 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(form.email, form.password);
+      const data = await login(form.email, form.password);
       toast.success('Welcome back!');
-      navigate('/');
+      navigate(data?.user?.role === 'admin' ? '/admin' : '/');
     } catch (err) {
       toast.error(err.response?.data?.message || err.message || 'Login failed');
     } finally {

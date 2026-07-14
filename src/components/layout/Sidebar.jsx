@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiCalendar, FiStar, FiTarget, FiFlag, FiCheckSquare, FiClock, FiZap, FiAward, FiCompass, FiBarChart2, FiUser } from 'react-icons/fi';
+import { FiHome, FiCalendar, FiStar, FiTarget, FiFlag, FiCheckSquare, FiClock, FiZap, FiAward, FiCompass, FiBarChart2, FiUser, FiShield } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
@@ -19,7 +19,7 @@ const navItems = [
 ];
 
 export default function Sidebar({ open, onClose }) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   return (
     <aside className={`sidebar ${open ? 'sidebar--open' : ''}`}>
@@ -42,6 +42,16 @@ export default function Sidebar({ open, onClose }) {
             <span>{item.label}</span>
           </NavLink>
         ))}
+        {user?.role === 'admin' && (
+          <NavLink
+            to="/admin"
+            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+            onClick={onClose}
+          >
+            <FiShield />
+            <span>Admin</span>
+          </NavLink>
+        )}
       </nav>
       <button className="sidebar__logout" onClick={() => { onClose?.(); logout(); }}>
         Sign Out
